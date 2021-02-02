@@ -63,11 +63,14 @@ export default {
         const articleForm = new FormData()
         articleForm.append('title', this.articleForm.title)
         articleForm.append('content', this.articleForm.content)
-        if (!this.articleId) {
+        if (this.file) {
           articleForm.append('preview', this.file)
-          await setArticle(articleForm)
         } else {
           articleForm.append('preview', this.articleForm.preview)
+        }
+        if (!this.articleId) {
+          await setArticle(articleForm)
+        } else {
           await editArticle(this.articleId, articleForm)
         }
         await this.$store.dispatch('user/getInfo')

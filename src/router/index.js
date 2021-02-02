@@ -64,7 +64,7 @@ export const constantRoutes = [
         path: 'userCenter',
         name: 'userCenter',
         component: () => import('@/views/usercenter/index'),
-        meta: { title: '用户中心', icon: 'dashboard' }
+        meta: { title: '用户中心', icon: 'user' }
       }
     ]
   },
@@ -72,26 +72,26 @@ export const constantRoutes = [
     path: '/article',
     component: Layout,
     redirect: '/myArticle',
-    meta: { title: '我的文章', icon: 'dashboard' },
+    meta: { title: '我的文章', icon: 'article' },
     children: [
       {
         path: 'createArticle',
         name: 'createArticle',
         component: () => import('@/views/article/EditArticle'),
-        meta: { title: '新建文章', icon: 'dashboard' }
+        meta: { title: '新建文章', icon: 'new' }
       },
       {
         path: 'myArticle',
         name: 'myArticle',
         component: () => import('@/views/article/index'),
-        meta: { title: '文章列表', icon: 'dashboard' }
+        meta: { title: '文章列表', icon: 'list ' }
       },
       {
         path: 'editArticle/:id',
         name: 'editArticle',
         prop: true,
         component: () => import('@/views/article/EditArticle'),
-        meta: { title: '文章列表', icon: 'dashboard' },
+        meta: { title: '文章列表', icon: 'list' },
         hidden: true
       }
     ]
@@ -105,7 +105,7 @@ export const constantRoutes = [
         path: 'orderList',
         name: 'orderList',
         component: () => import('@/views/usercenter/index'),
-        meta: { title: '我的订单', icon: 'dashboard' }
+        meta: { title: '我的订单', icon: 'order' }
       }
     ]
   },
@@ -118,7 +118,7 @@ export const constantRoutes = [
         path: 'banner',
         name: 'banner',
         component: () => import('@/views/banner/index'),
-        meta: { title: '轮播图', icon: 'dashboard' }
+        meta: { title: '轮播图', icon: 'lunbo' }
       }
     ]
   },
