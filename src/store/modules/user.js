@@ -5,16 +5,14 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: '',
-    articles: []
+    avatar: ''
   }
 }
 
 const types = {
   SET_TOKEN: 'SET_TOKEN',
   SET_AVATAR: 'SET_AVATAR',
-  SET_NAME: 'SET_NAME',
-  SET_ARTICLE: 'SET_ARTICLE'
+  SET_NAME: 'SET_NAME'
 }
 
 const state = getDefaultState()
@@ -28,9 +26,6 @@ const mutations = {
   },
   [types.SET_TOKEN](state, token) {
     state.token = token
-  },
-  [types.SET_ARTICLE](state, articles) {
-    state.articles = articles
   }
 }
 
@@ -52,10 +47,9 @@ const actions = {
     return new Promise(async (resolve, rejected) => {
       try {
         const data = await getInfo()
-        const { username, avatar, articles } = data
+        const { username, avatar } = data
         commit(types.SET_AVATAR, avatar)
         commit(types.SET_NAME, username)
-        commit(types.SET_ARTICLE, articles)
         resolve(data)
       } catch (error) {
         rejected(error)

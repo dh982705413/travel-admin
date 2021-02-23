@@ -48,9 +48,9 @@ http.interceptors.response.use(
     return res
   },
   error => {
-    console.log('err' + error) // for debug
+    console.dir(error) // for debug
     Message({
-      message: error.message,
+      message: error.response.data.message,
       type: 'error',
       duration: 5 * 1000
     })

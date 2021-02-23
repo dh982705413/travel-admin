@@ -2,42 +2,60 @@
   <div id="article">
     <h2>文章列表</h2>
     <el-table :data="articles">
-      <el-table-column label="ID" prop="_id"></el-table-column>
+      <el-table-column label="ID"
+                       prop="_id"></el-table-column>
       <el-table-column label="封面">
         <template slot-scope="scope">
-          <img :src="scope.row.preview" alt="" class="preview" />
+          <img :src="scope.row.preview"
+               alt=""
+               class="preview" />
         </template>
       </el-table-column>
-      <el-table-column label="标题" prop="title"></el-table-column>
-      <el-table-column label="摘要" prop="content"></el-table-column>
+      <el-table-column label="标题"
+                       prop="title"></el-table-column>
+      <el-table-column label="摘要"
+                       prop="content"></el-table-column>
       <el-table-column label="其他操作">
         <template slot-scope="scope">
-          <el-button
-            type="primary"
-            size="mini"
-            icon="el-icon-edit"
-            @click="editArticle(scope.row._id)"
-            >编辑</el-button
-          >
-          <el-button
-            type="danger"
-            size="mini"
-            icon="el-icon-delete"
-            @click="removeArticle(scope.row._id)"
-            >删除</el-button
-          >
+          <el-button type="primary"
+                     size="mini"
+                     icon="el-icon-edit"
+                     @click="editArticle(scope.row._id)">编辑</el-button>
+          <el-button type="danger"
+                     size="mini"
+                     icon="el-icon-delete"
+                     @click="removeArticle(scope.row._id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <div class="sizebox"></div>
+    <el-pagination @size-change="handleSizeChange"
+                   @current-change="handleCurrentChange"
+                   :current-page="currenPage"
+                   background
+                   :page-sizes="[5, 10, 20, 30]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total">
+    </el-pagination>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { removeArticle } from '@/api/article'
+import { getArticle } from '@/api/article'
 export default {
-  computed: {
-    ...mapGetters(['articles'])
+
+  data() {
+    return {
+      currenPage: 1,
+      pageSize: 5,
+      total: 10,
+      articles: []
+    }
+  },
+  async created() {
+    await this.getArticle()
   },
   methods: {
     async removeArticle(id) {
@@ -47,11 +65,24 @@ export default {
         type: 'warning'
       }).then(async () => {
         await removeArticle(id)
-        await this.$store.dispatch('user/getInfo')
+        await this.getArticle()
       })
     },
     editArticle(id) {
       this.$router.push(`editArticle/${id}`)
+    },
+    async getArticle() {
+      const { total, articles } = await getArticle(this.currenPage, this.pageSize)
+      this.total = total
+      this.articles = articles
+    },
+    async handleSizeChange(val) {
+      this.pageSize = val
+      await this.getArticle()
+    },
+    async handleCurrentChange(val) {
+      this.currenPage = val
+      await this.getArticle()
     }
   }
 }

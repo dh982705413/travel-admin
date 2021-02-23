@@ -19,3 +19,8 @@ export function getArticleDetail(id) {
 export function editArticle(id, articleForm) {
   return http.patch(`/article/edit/${id}`, articleForm)
 }
+
+// 获取文章
+export function getArticle(currentPage, pageSize) {
+  return http.get(`/article/${currentPage}/${pageSize}`)
+}
