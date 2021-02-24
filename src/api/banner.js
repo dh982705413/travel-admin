@@ -26,5 +26,10 @@ export function getEnableBanners() {
 
 // 设置轮播图播放速度
 export function setInterval(bannerOpt) {
-  return http.post('/banner/setInterval',  bannerOpt )
+  return http.post('/banner/setInterval', bannerOpt)
+}
+
+// 更新轮播图
+export function updateBanner(id, form) {
+  return http.patch(`/banner/updateBanner/${id}`, form)
 }

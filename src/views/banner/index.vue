@@ -1,169 +1,191 @@
 <template>
   <div id="Banner">
-    <el-carousel :interval="bannerOptions.interval"
-                 type="card"
-                 height="300px"
-                 class="carousel">
-      <el-carousel-item v-for="item in enableBanners"
-                        :key="item._id">
-        <img :src="item.image"
-             class="carousel-item">
+    <el-carousel
+      :interval="bannerOptions.interval"
+      type="card"
+      height="300px"
+      class="carousel"
+    >
+      <el-carousel-item v-for="item in enableBanners" :key="item._id">
+        <img :src="item.image" class="carousel-item" />
       </el-carousel-item>
     </el-carousel>
 
     <el-card class="banner-edit">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="轮播图列表"
-                     name="banner-list">
+        <el-tab-pane label="轮播图列表" name="banner-list">
           <div class="banner-list">
-            <div class="banner-list-img"
-                 v-for="item in banners"
-                 :key="item._id"
-                 :style="{width:sidebar.opened ? '268px':'300px'}">
-              <img :src="item.image"
-                   @click="openEditBannerDialog(item)">
-              <div class="btn-delete animated fadeIn"
-                   @click="deleteBanner(item._id)"
-                   v-show="isDelete">
+            <div
+              class="banner-list-img"
+              v-for="item in banners"
+              :key="item._id"
+              :style="{ width: sidebar.opened ? '268px' : '300px' }"
+            >
+              <img :src="item.image" @click="openEditBannerDialog(item)" />
+              <div
+                class="btn-delete animated fadeIn"
+                @click="deleteBanner(item._id)"
+                v-show="isDelete"
+              >
                 <div class="line-hr"></div>
               </div>
-              <el-checkbox class="btn-enable animated fadeIn"
-                           v-model="item.isCheck"
-                           v-show="isEdit"
-                           @change="changeBannerState(item._id,$event)"></el-checkbox>
-              <div class="check-point animated fadeIn"
-                   v-show="item.isCheck && !isEdit && !isDelete">
+              <el-checkbox
+                class="btn-enable animated fadeIn"
+                v-model="item.isCheck"
+                v-show="isEdit"
+                @change="changeBannerState(item._id, $event)"
+              ></el-checkbox>
+              <div
+                class="check-point animated fadeIn"
+                v-show="item.isCheck && !isEdit && !isDelete"
+              >
                 <i class="el-icon-success"></i>
               </div>
             </div>
           </div>
-          <el-pagination @size-change="handleSizeChange"
-                         @current-change="handleCurrentChange"
-                         :current-page="currenPage"
-                         background
-                         :page-sizes="[5, 10, 20, 30]"
-                         :page-size="pageSize"
-                         layout="total, sizes, prev, pager, next, jumper"
-                         :total="total">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currenPage"
+            background
+            :page-sizes="[5, 10, 20, 30]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+          >
           </el-pagination>
-
         </el-tab-pane>
-        <el-tab-pane label="轮播图管理"
-                     name="banner-edit">
-          <el-form ref="form"
-                   label-width="100px">
+        <el-tab-pane label="轮播图管理" name="banner-edit">
+          <el-form ref="form" label-width="100px">
             <el-form-item label="轮播图速度">
-              <el-select v-model="bannerOptions.interval"
-                         placeholder="请选择轮播图播放速度"
-                         @change="changeInterval">
-                <el-option v-for="item in intervalOptions"
-                           :key="item.value"
-                           :label="item.label"
-                           :value="item.value">
+              <el-select
+                v-model="bannerOptions.interval"
+                placeholder="请选择轮播图播放速度"
+                @change="changeInterval"
+              >
+                <el-option
+                  v-for="item in intervalOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
                 </el-option>
               </el-select>
-
             </el-form-item>
           </el-form>
         </el-tab-pane>
       </el-tabs>
       <div class="banner-list-options">
-        <i class="el-icon-circle-plus-outline"
-           @click="changeOption('add')"></i>
-        <i class="el-icon-delete"
-           :style="{color:isDelete?'red':''}"
-           @click="changeOption('isDelete')"></i>
-        <i class="el-icon-edit"
-           :style="{color:isEdit?'green':''}"
-           @click="changeOption('isEdit')"></i>
+        <i class="el-icon-circle-plus-outline" @click="changeOption('add')"></i>
+        <i
+          class="el-icon-delete"
+          :style="{ color: isDelete ? 'red' : '' }"
+          @click="changeOption('isDelete')"
+        ></i>
+        <i
+          class="el-icon-edit"
+          :style="{ color: isEdit ? 'green' : '' }"
+          @click="changeOption('isEdit')"
+        ></i>
       </div>
     </el-card>
 
-    <el-dialog title="添加轮播图"
-               top="15vh"
-               :visible.sync="addBannerDialog">
+    <el-dialog title="添加轮播图" top="15vh" :visible.sync="addBannerDialog">
       <div class="banner-container">
-        <el-upload action
-                   :show-file-list="false"
-                   :auto-upload="true"
-                   :on-success="setPreview"
-                   :http-request="getFile"
-                   :headers="{ Authorization: 'Bearer ' + token }"
-                   class="preview-banner">
-          <img v-if="bannerForm.image"
-               :src="bannerForm.image"
-               class="banner-list-img" />
-          <i v-else
-             class="el-icon-plus avatar-uploader-icon"></i>
+        <el-upload
+          action
+          :show-file-list="false"
+          :auto-upload="true"
+          :on-success="setPreview"
+          :http-request="getFile"
+          :headers="{ Authorization: 'Bearer ' + token }"
+          class="preview-banner"
+        >
+          <img
+            v-if="bannerForm.image"
+            :src="bannerForm.image"
+            class="banner-list-img"
+          />
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
-        <el-form ref="form"
-                 label-width="80px"
-                 class="add-banner-option">
+        <el-form ref="form" label-width="80px" class="add-banner-option">
           <el-form-item label="标题">
-            <el-input placeholder="请输入标题"
-                      v-model="bannerForm.title"></el-input>
+            <el-input
+              placeholder="请输入标题"
+              v-model="bannerForm.title"
+            ></el-input>
           </el-form-item>
           <el-form-item label="日期">
-            <el-date-picker v-model="bannerForm.time"
-                            type="date"
-                            placeholder="请输入日期">
+            <el-date-picker
+              v-model="bannerForm.time"
+              type="date"
+              placeholder="请输入日期"
+            >
             </el-date-picker>
           </el-form-item>
           <el-form-item label="状态">
-            <el-switch v-model="bannerForm.isCheck"
-                       active-color="#13ce66"
-                       inactive-color="#ff4949"
-                       :disabled="isFull">
+            <el-switch
+              v-model="bannerForm.isCheck"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :disabled="isFull"
+            >
             </el-switch>
           </el-form-item>
           <div class="sizebox"></div>
         </el-form>
       </div>
 
-      <div slot="footer"
-           class="dialog-footer">
-        <el-button type="primary"
-                   @click="addBanner">添 加</el-button>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="addBanner">添 加</el-button>
         <el-button @click="addBannerDialog = false">取 消</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog title="编辑轮播图"
-               :visible.sync="editBannerDialog"
-               class="flex">
-      <img :src="bannerForm.image"
-           class="banner-list-img">
-      <el-form ref="form"
-               label-width="80px"
-               class="add-banner-option">
+    <el-dialog title="编辑轮播图" :visible.sync="editBannerDialog" class="flex">
+      <img :src="bannerForm.image" class="banner-list-img" />
+      <el-form ref="form" label-width="80px" class="add-banner-option">
         <el-form-item label="标题">
-          <el-input placeholder="请输入标题"
-                    v-model="bannerForm.title"></el-input>
+          <el-input
+            placeholder="请输入标题"
+            v-model="bannerForm.title"
+          ></el-input>
         </el-form-item>
         <el-form-item label="日期">
-          <el-date-picker v-model="bannerForm.time"
-                          type="date"
-                          placeholder="请输入日期">
+          <el-date-picker
+            v-model="bannerForm.time"
+            type="date"
+            placeholder="请输入日期"
+          >
           </el-date-picker>
         </el-form-item>
         <el-form-item label="状态">
-          <span :style="{color:bannerForm.isCheck?'#13ce66':'#ff4949'}">{{bannerForm.isCheck?'已启用':'未启用'}}</span>
-
+          <span
+            :style="{ color: bannerForm.isCheck ? '#13ce66' : '#ff4949' }"
+            >{{ bannerForm.isCheck ? '已启用' : '未启用' }}</span
+          >
         </el-form-item>
         <div class="sizebox"></div>
       </el-form>
-      <div slot="footer"
-           class="dialog-footer">
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="editBanner">编 辑</el-button>
         <el-button @click="editBannerDialog = false">取 消</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { setBanner, getAllBanners, deleteBanner, enableBanner, getEnableBanners, setInterval } from '@/api/banner'
+import {
+  setBanner,
+  getAllBanners,
+  deleteBanner,
+  enableBanner,
+  getEnableBanners,
+  setInterval,
+  updateBanner
+} from '@/api/banner'
 export default {
   name: 'banner',
   data() {
@@ -175,26 +197,29 @@ export default {
       activeName: 'banner-list',
       addBannerDialog: false,
       editBannerDialog: false,
-      bannerForm: { image: "", title: '', time: '', isCheck: false },
+      bannerForm: { image: '', title: '', time: '', isCheck: false },
       file: {},
       bannerOptions: {
         interval: null
       },
-      intervalOptions: [{
-        value: 1000,
-        label: '1000ms'
-      },
-      {
-        value: 2000,
-        label: '2000ms'
-      },
-      {
-        value: 3000,
-        label: '3000ms'
-      }, {
-        value: 4000,
-        label: '4000ms'
-      }],
+      intervalOptions: [
+        {
+          value: 1000,
+          label: '1000ms'
+        },
+        {
+          value: 2000,
+          label: '2000ms'
+        },
+        {
+          value: 3000,
+          label: '3000ms'
+        },
+        {
+          value: 4000,
+          label: '4000ms'
+        }
+      ],
       currenPage: 1,
       pageSize: 10,
       total: 100,
@@ -216,6 +241,7 @@ export default {
     },
     async getFile(options) {
       this.file = options.file
+      console.log(options)
     },
     async getEnableBanners() {
       const { enableBanners, interval, isFull } = await getEnableBanners()
@@ -245,7 +271,10 @@ export default {
       this.bannerForm = {}
     },
     async getBanners() {
-      const { banners, total, interval } = await getAllBanners(this.currenPage, this.pageSize)
+      const { banners, total, interval } = await getAllBanners(
+        this.currenPage,
+        this.pageSize
+      )
       this.banners = banners
       this.total = total
       this.bannerOptions.interval = interval
@@ -266,11 +295,10 @@ export default {
     async changeBannerState(id, isCheck) {
       await enableBanner(id, isCheck)
       await this.initBanners()
-
     },
     changeOption(type) {
       if (type === 'add') {
-        this.bannerForm = {}
+        this.bannerForm = { image: '', title: '', time: '', isCheck: false }
         this.addBannerDialog = true
       } else if (type === 'isDelete') {
         this.isEdit = false
@@ -298,12 +326,21 @@ export default {
     async initBanners() {
       await this.getBanners()
       await this.getEnableBanners()
+    },
+    async editBanner() {
+      try {
+        await updateBanner(this.bannerForm._id, this.bannerForm)
+        this.$message.success('编辑成功')
+      } catch {
+        this.$message.error('编辑失败')
+      }
+      this.editBannerDialog = false
     }
   }
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 #Banner {
   width: 100%;
   height: 100%;
@@ -333,6 +370,7 @@ export default {
     &-img {
       position: relative;
       height: 200px;
+      width: 345px;
       margin: 0 5px;
       margin-bottom: 10px;
       border-radius: 10px;
